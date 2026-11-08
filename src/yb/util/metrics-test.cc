@@ -971,6 +971,15 @@ TEST_F(MetricsTest, VerifyLabelValueEscaping) {
   ASSERT_STR_CONTAINS(output_str, "table_name=\"line1\\nline2\"");
 }
 
+TEST_F(MetricsTest, EscapePrometheusLabelValue) {
+  ASSERT_EQ(EscapePrometheusLabelValue(""), "");
+  ASSERT_EQ(EscapePrometheusLabelValue("plain_name"), "plain_name");
+  ASSERT_EQ(EscapePrometheusLabelValue("a\"b"), "a\\\"b");
+  ASSERT_EQ(EscapePrometheusLabelValue("a\\b"), "a\\\\b");
+  ASSERT_EQ(EscapePrometheusLabelValue("a\nb"), "a\\nb");
+  ASSERT_EQ(EscapePrometheusLabelValue("\"\\\n"), "\\\"\\\\\\n");
+}
+
 // Regression test for a dangling-reference bug in
 // MetricsAggregator::CreateOrFindPreAggregatedMetricValueHolder.
 //
