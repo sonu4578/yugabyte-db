@@ -30,6 +30,7 @@
 
 #include "yb/util/flags.h"
 #include "yb/util/jsonwriter.h"
+#include "yb/util/metric_entity.h"
 #include "yb/util/metrics_writer.h"
 #include "yb/util/tcmalloc_util.h"
 #include "yb/util/signal_util.h"
@@ -295,8 +296,8 @@ void emitYsqlConnectionManagerMetrics(PrometheusWriter *pwriter) {
         {"ysql_conn_mgr_sticky_connections", stats.sticky_connections, "gauge",
          "Number of logical connections attached to a physical connection for the lifetime of the "
          "logical connection"});
-    ysql_conn_mgr_prometheus_attr[DATABASE] = stats.database_name;
-    ysql_conn_mgr_prometheus_attr[USER] = stats.user_name;
+    ysql_conn_mgr_prometheus_attr[DATABASE] = EscapePrometheusLabelValue(stats.database_name);
+    ysql_conn_mgr_prometheus_attr[USER] = EscapePrometheusLabelValue(stats.user_name);
 
     // Publish collected metrics for the current pool.
     for (auto entry : ysql_conn_mgr_metrics) {

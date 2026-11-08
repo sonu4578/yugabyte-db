@@ -338,6 +338,9 @@ scoped_refptr<Metric> MetricEntity::FindOrNull(const MetricPrototype& prototype)
   return down_cast<Metric*>(FindPtrOrNull(metric_map_, &prototype).get());
 }
 
+// Escapes backslash, double quote and newline, as the Prometheus exposition format requires.
+std::string EscapePrometheusLabelValue(const std::string& s);
+
 void WriteRegistryAsJson(JsonWriter* writer);
 
 void ConvertToServerLevelAttributes(MetricEntity::AttributeMap* non_server_level_attributes);
