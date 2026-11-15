@@ -13,6 +13,11 @@
 
 set(YB_PCH_PATH ../)
 
+# Kept separate from yb_pggate_webserver so it can be unit tested without postgres.
+ADD_YB_LIBRARY(yb_pggate_conn_mgr_metrics
+               SRCS ysql_conn_mgr_prometheus.cc
+               DEPS yb_util)
+
 set(PGGATE_WEBSERVER_SRCS
     ybc_pg_webserver_wrapper.cc
     )
@@ -20,6 +25,7 @@ set(PGGATE_WEBSERVER_SRCS
 set(PGGATE_WEBSERVER_LIBS
     server_process
     yb_common
+    yb_pggate_conn_mgr_metrics
     yb_pggate_util
     yb_util
     )
@@ -27,3 +33,6 @@ set(PGGATE_WEBSERVER_LIBS
 ADD_YB_LIBRARY(yb_pggate_webserver
                SRCS ${PGGATE_WEBSERVER_SRCS}
                DEPS ${PGGATE_WEBSERVER_LIBS})
+
+set(YB_TEST_LINK_LIBS yb_pggate_conn_mgr_metrics ${YB_MIN_TEST_LIBS})
+ADD_YB_TEST(ysql_conn_mgr_prometheus-test)
